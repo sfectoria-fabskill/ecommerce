@@ -1,10 +1,11 @@
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
-import image from "../assets/images/products/bootstrap.png";
 import { FaEye } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 function BasicCard({ product }) {
-  const { title, description, price } = product;
+  const { id,title, description, price, image } = product;
+  const navigate=useNavigate()
   return (
     <Card style={{ width: "18rem" }}>
       <Card.Img variant="top" src={image} />
@@ -13,7 +14,9 @@ function BasicCard({ product }) {
         <Card.Text>{description}</Card.Text>
         <h6>{price}</h6>
         <div>
-          <FaEye />
+          <Button variant="light" onClick={()=>{navigate('product/'+id)}}>
+            <FaEye />
+          </Button>
           <Button variant="warning">Add to cart</Button>
         </div>
       </Card.Body>
