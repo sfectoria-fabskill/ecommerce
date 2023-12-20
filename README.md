@@ -1,70 +1,85 @@
-# Getting Started with Create React App
+<h1 align="center">Tamakan ERP Platform</h1>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## About
 
-## Available Scripts
+- [Nest.js](https://nestjs.com/) + JWT + GraphQL (code-first) + REST + Swagger
+- [Prisma](https://prisma.io/) + utilities
+- Front-end app **
+- Full Typescript support
+- Common package 
+- Core package + NestJS utilites
+- ESLint Ready (`yarn lint`)
+- Prettier Ready
+- CI for GitHub Actions
+- Yarn (berry) version `3.2.0` (PnP disabled since it's not supported by NestJs and Prisma yet)
 
-In the project directory, you can run:
+## Structure
 
-### `npm start`
+This template follows [Nest.js's convention](https://docs.nestjs.com/cli/monorepo) of monorepo, so there are Apps and then there are Libraries.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```
+📦 tamakan-erp-monorepo
+ ┣ 📂 apps
+ ┃ ┣ 📂 api
+ ┃ ┣ 📂 web
+ ┃ ┗ 📂 etc.
+ ┣ 📂 libs
+ ┃ ┣ 📂 common 
+ ┃ ┣ 📂 core 
+ ┃ ┣ 📂 prisma
+ ┃ ┗ 📂 etc.
+ ┣ 📜.eslintrc.js
+ ┣ 📜.prettierrc
+ ┣ 📜.yarnrc.yml
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- core and common are imported from your back-end apps.
+- prisma is used by your back-end apps that need database.
+- common is shared between all of your apps.
 
-### `npm test`
+## How to import from other apps/libraries
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+To import an package (app or library) into another one:
 
-### `npm run build`
+1. Add the package as a dependency like so:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```json apps/api/package.json
+{
+  "dependencies": {
+    "@tamakan-erp/common": "workspace:*"
+  }
+}
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Note that the `@tamakan-erp/common` name, comes from `libs/common/package.json`'s name key:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```json
+{
+  "name": "@tamakan-erp/common"
+}
+```
 
-### `npm run eject`
+2. Use it in your code like this:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```ts
+import { MyCommonModule } from '@tamakan-erp/common';
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Note about Prisma
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Instead of importing your Prisma modules from `@prisma/client`, now you import them from `@tamakan-erp/prisma`.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+This way you can defined your schema in a "library" and then import the prisma client in different apps, accessing the same database.
 
-## Learn More
+For instance:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```ts
+import { PrismaClient } from '@tamakan-erp/prisma';
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+const prisma = new PrismaClient();
+```
 
-### Code Splitting
+## Todos?
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- [Turborepo](https://turborepo.org/)
+- [NX](https://nx.dev/)

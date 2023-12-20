@@ -1,0 +1,1 @@
+export const serverUploadConfig ='http://localhost:5000/'
