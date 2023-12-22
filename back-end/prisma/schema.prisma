@@ -3,7 +3,8 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["filteredRelationCount", "orderByRelation"]
+  previewFeatures = ["filteredRelationCount", "orderByRelation","fullTextSearch","selectRelationCount"]
+
 }
 
 datasource db {
@@ -12,30 +13,46 @@ datasource db {
 }
 
 model Product {
-  id          String      @id @default(uuid())
+  id          String       @id @default(uuid())
   title       String
   description String
   price       Float
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
   cover       String
-  Supply      Supply[]
   OrderLine   OrderLine[]
+  SupplyLine  SupplyLine[]
 }
 
 model Supply {
-  id        String   @id @default(uuid())
+  id                            String       @id @default(uuid())
+  createdAt                     DateTime     @default(now())
+  updatedAt                     DateTime     @updatedAt
+  supplierName                  String
+  supplierAddress               String
+  supplierTel                   String
+  supplierEmail                 String?
+  suppliertaxRegistrationNumber String?
+  SupplyLine                    SupplyLine[]
+}
+
+model SupplyLine {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   productId String
   Product   Product  @relation(fields: [productId], references: [id])
+  supplyId  String
+  Supply    Supply   @relation(fields: [supplyId], references: [id])
+  quantity  Int
+
+  @@unique(fields: [productId, supplyId])
 }
 
 model Order {
   id            String      @id @default(uuid())
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
-  confirmed     Boolean     @default(false)
+  status        Status      @default(pending)
   clientName    String
   clientAddress String
   clientPhone   String
@@ -44,17 +61,19 @@ model Order {
 }
 
 model OrderLine {
-  id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   orderId   String
-  Order     Order    @relation(fields: [orderId], references: [id])
+  Order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   productId String
   Product   Product  @relation(fields: [productId], references: [id])
   quantity  Int
+
+  @@unique(fields: [orderId, productId])
 }
 
-enum Gender {
-  male
-  female
+enum Status {
+  pending
+  confirmed
+  refused
 }

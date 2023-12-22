@@ -10,6 +10,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.enableCors({optionsSuccessStatus:200,credentials:true, });
   app.setGlobalPrefix('/api/v1');
+  app.useStaticAssets('upload', { prefix: '/upload' });
   app.useGlobalPipes(new ValidationPipe());
   const config = new DocumentBuilder()
     .setTitle('Sfectoria-Fabskill ')

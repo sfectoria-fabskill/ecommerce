@@ -10,14 +10,37 @@ export class ProductsService {
     return await this.prisma.product.create({ data: dto });
   }
 
-  async findAll() {
-    return this.prisma.product.findMany();
+  async findAll(avaible: boolean) {
+    const products = await this.prisma.product.findMany({
+      include: {
+        OrderLine: { select: { quantity: true },where:{Order:{status:'confirmed'}} },
+        SupplyLine: { select: { quantity: true }, },
+      },
+    });
+    
+    return products.map((elem) => {
+      const { OrderLine, SupplyLine, ...rest } = elem;
+      let sumSuppliersQuantity = 0;
+      let sumOrdersQuantity = 0;
+      OrderLine.forEach((el) => {
+        sumOrdersQuantity += el.quantity;
+      });
+      SupplyLine.forEach((el) => {
+        sumSuppliersQuantity += el.quantity;
+      });
+      return { stock: sumSuppliersQuantity - sumOrdersQuantity, ...rest };
+    });;
   }
 
-  findOne(id: string) {
-    return this.prisma.product.findUniqueOrThrow({
+  async findOne(id: string) {
+    const product = await this.prisma.product.findUniqueOrThrow({
       where: {
         id,
+      },
+      include: {
+        _count: {
+          select: { OrderLine: true, SupplyLine: true },
+        },
       },
     });
   }
@@ -30,6 +53,6 @@ export class ProductsService {
   }
 
   remove(id: string) {
-    return this.prisma.product.delete({where:{id}});
+    return this.prisma.product.delete({ where: { id } });
   }
 }

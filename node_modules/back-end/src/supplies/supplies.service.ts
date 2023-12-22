@@ -1,26 +1,42 @@
 import { Injectable } from '@nestjs/common';
 import { CreateSupplyDto } from './dto/create-supply.dto';
 import { UpdateSupplyDto } from './dto/update-supply.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class SuppliesService {
-  create(createSupplyDto: CreateSupplyDto) {
-    return 'This action adds a new supply';
+  constructor(private readonly prisma: PrismaService) {}
+  async create(dto: CreateSupplyDto) {
+    return this.prisma.supply.create({
+      data: { ...dto, SupplyLine: { createMany: { data: dto.SupplyLine } } },
+    });
   }
 
-  findAll() {
-    return `This action returns all supplies`;
+  async findAll() {
+    return await this.prisma.supply.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} supply`;
+  async findOne(id: string) {
+    return await this.prisma.supply.findUniqueOrThrow({ where: { id } });
   }
 
-  update(id: number, updateSupplyDto: UpdateSupplyDto) {
-    return `This action updates a #${id} supply`;
+  async update(id: string, dto: UpdateSupplyDto) {
+    return this.prisma.supply.update({
+      where: { id },
+      data: {
+        ...dto,
+        SupplyLine: {
+          deleteMany: { supplyId: id },
+          createMany: { data: dto.SupplyLine },
+        },
+      },
+      include: {
+        SupplyLine: true,
+      },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} supply`;
+  async remove(id: string) {
+    return await this.prisma.supply.delete({ where: { id } });
   }
 }

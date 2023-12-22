@@ -4,12 +4,11 @@
   "private": true,
   "workspaces": [
     "back-end",
-    "apps/client-side",
-    "server-upload"
+    "apps/client-side"
   ],
   "scripts": {
     "start": "turbo run start --parallel",
-    "build": " NODE_OPTIONS=--max-old-space-size=4096 yarn workspace back-office run build && yarn workspace back-end run build && yarn workspace back-office run build && yarn workspace server-upload run build",
+    "build": " NODE_OPTIONS=--max-old-space-size=4096 yarn workspace back-office run build && yarn workspace back-end run build ",
     "watch": "yarn workspaces foreach run build:watch",
     "test": "yarn workspaces foreach run test",
     "lint": "eslint \"{src,back,front,test}/**/*.ts\"",
