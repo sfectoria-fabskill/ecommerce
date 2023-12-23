@@ -5,12 +5,12 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "react-use-cart";
 
 function BasicCard({ product }) {
-  const { id,title, description, price, image } = product;
+  const { id,title, description, price, cover } = product;
   const navigate=useNavigate()
   const { addItem } = useCart()
   return (
     <Card style={{ width: "18rem" }}>
-      <Card.Img variant="top" src={image} />
+      <Card.Img variant="top" src={cover} />
       <Card.Body>
         <Card.Title>{title}</Card.Title>
         <Card.Text>{description}</Card.Text>

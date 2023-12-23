@@ -8,6 +8,7 @@ import Product from "./pages/Product";
 import Navbar from "./layouts/Navbar";
 import { useState } from "react";
 import Cart from "./components/Cart";
+import Checkout from "./pages/Checkout";
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
         <Routes>
           <Route index element={<Home />} />
           <Route path="product/:productId" element={<Product />} />
+          <Route path="checkout" element={<Checkout />} />
         </Routes>
         </CartProvider>
       </BrowserRouter>
