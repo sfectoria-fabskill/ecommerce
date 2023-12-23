@@ -1,9 +1,20 @@
-import React from 'react'
+import React from "react";
+import { CiShoppingCart } from "react-icons/ci";
 
-function navbar() {
+
+
+function Navbar() {
+ 
   return (
-    <div>navbar</div>
-  )
+    <div className="p-2 d-flex justify-content-between shadow-sm">
+      <h1>SFECTORIA</h1>
+    
+        
+        <CiShoppingCart />
+
+     
+    </div>
+  );
 }
 
-export default navbar
+export default Navbar;
