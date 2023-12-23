@@ -1,0 +1,1 @@
+export const uploadApi='http://localhost:3001'

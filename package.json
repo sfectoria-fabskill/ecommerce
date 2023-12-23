@@ -1,43 +1,43 @@
 {
+  "dependencies": {},
   "name": "sfectoria-fabskill",
-  "version": "0.1.0",
   "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "bootstrap": "^5.3.2",
-    "react": "^18.2.0",
-    "react-bootstrap": "^2.9.1",
-    "react-dom": "^18.2.0",
-    "react-icons": "^4.12.0",
-    "react-router-dom": "^6.21.0",
-    "react-scripts": "5.0.1",
-    "react-use-cart": "^1.13.0",
-    "web-vitals": "^2.1.4"
-  },
+  "workspaces": [
+    "back-end",
+    "apps/client-side",
+    "apps/admin-side"
+  ],
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "turbo run start --parallel",
+    "build": " NODE_OPTIONS=--max-old-space-size=4096 yarn workspace admin-side run build && yarn workspace back-end run build ",
+    "watch": "yarn workspaces foreach run build:watch",
+    "test": "yarn workspaces foreach run test",
+    "lint": "eslint \"{src,back,front,test}/**/*.ts\"",
+    "lint:fix": "eslint \"{src,back,front,test}/**/*.ts\" --fix",
+    "studio": "yarn workspace back-end studio",
+    "generate": "yarn workspace back-end generate",
+    "migrate:deploy": " yarn workspace back-end run migrate:deploy",
+    "migrate:dev:create": "yarn workspace back-end migrate:dev:create",
+    "migrate:reset": "yarn workspace back-end migrate:reset",
+    "migrate:dev": "yarn workspace back-end migrate:dev",
+    "seed": "yarn workspace back-end seed",
+    "prisma:build": "yarn workspace back-end prisma:build"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "turbo": "^1.8.3"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "browser": {
+    "assert": false,
+    "crypto": false,
+    "fs": false,
+    "https": false,
+    "net": false,
+    "os": false,
+    "stream": false,
+    "tls": false
+  },
+  "engines": {
+    "node": ">=18 "
   }
 }

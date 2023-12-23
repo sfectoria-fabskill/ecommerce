@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["filteredRelationCount", "orderByRelation","fullTextSearch","selectRelationCount"]
+
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id          String       @id @default(uuid())
+  title       String
+  description String
+  price       Float
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  cover       String
+  OrderLine   OrderLine[]
+  SupplyLine  SupplyLine[]
+}
+
+model Supply {
+  id                            String       @id @default(uuid())
+  createdAt                     DateTime     @default(now())
+  updatedAt                     DateTime     @updatedAt
+  supplierName                  String
+  supplierAddress               String
+  supplierTel                   String
+  supplierEmail                 String?
+  suppliertaxRegistrationNumber String?
+  SupplyLine                    SupplyLine[]
+}
+
+model SupplyLine {
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  productId String
+  Product   Product  @relation(fields: [productId], references: [id])
+  supplyId  String
+  Supply    Supply   @relation(fields: [supplyId], references: [id])
+  quantity  Int
+
+  @@unique(fields: [productId, supplyId])
+}
+
+model Order {
+  id            String      @id @default(uuid())
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  status        Status      @default(pending)
+  clientName    String
+  clientAddress String
+  clientPhone   String
+  clientEmail   String?
+  OrderLine     OrderLine[]
+}
+
+model OrderLine {
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orderId   String
+  Order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  Product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int
+
+  @@unique(fields: [orderId, productId])
+}
+
+enum Status {
+  pending
+  confirmed
+  refused
+}
